@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { biggerFont } from './fonts'
-import { WalletProvider } from './components/wallet/WalletProvider'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -16,9 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${biggerFont.variable}`}>
       <body>
-        <WalletProvider>
-          {children}
-        </WalletProvider>
+        {children}
       </body>
     </html>
   )

@@ -2,7 +2,18 @@
 
 import Image from 'next/image'
 import { biggerFont } from '../../fonts'
-import { SwimMap } from './SwimMap'
+import dynamic from 'next/dynamic'
+
+// Dynamically import SwimMap with no SSR
+const SwimMap = dynamic(
+  () => import('./SwimMap').then(mod => mod.SwimMap),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[600px] bg-gray-100 rounded-lg animate-pulse" />
+    )
+  }
+)
 
 export function Challenge() {
   return (
