@@ -4,14 +4,16 @@ import { Swimmers } from '@/app/components/home/Swimmers'
 import { DonationProgress } from '@/app/components/home/DonationProgress'
 import { Navigation } from '@/app/components/common/Navigation'
 import { Footer } from '@/app/components/common/Footer'
+import { SwimMap } from './components/home/SwimMap'
 
 export default function Home() {
   return (
     <main className="relative min-h-screen">
       <Navigation />
       <Challenge />
-      <Causes />
+      <SwimMap />
       <Swimmers />
+      <Causes />
       <DonationProgress />
       <Footer />
     </main>

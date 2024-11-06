@@ -14,6 +14,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${biggerFont.variable}`}>
+      <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/react-icons/gi/index.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/weather-icons/css/weather-icons.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" />
+      </head>
       <body>
         {children}
       </body>

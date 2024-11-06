@@ -4,17 +4,6 @@ import Image from 'next/image'
 import { biggerFont } from '../../fonts'
 import dynamic from 'next/dynamic'
 
-// Dynamically import SwimMap with no SSR
-const SwimMap = dynamic(
-  () => import('./SwimMap').then(mod => mod.SwimMap),
-  { 
-    ssr: false,
-    loading: () => (
-      <div className="w-full h-[600px] bg-gray-100 rounded-lg animate-pulse" />
-    )
-  }
-)
-
 export function Challenge() {
   return (
     <section className="relative bg-white">
@@ -103,7 +92,6 @@ export function Challenge() {
       {/* Map Section */}
       <div className="relative mt-16 px-4">
         <div className="mx-auto max-w-7xl">
-          <SwimMap />
         </div>
       </div>
     </section>
