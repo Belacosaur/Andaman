@@ -1,0 +1,28 @@
+@font-face {
+  font-family: "Bigger";
+  src: url("/fonts/BiggerDisplay.otf");
+}
+@font-face {
+  font-family: "Switzer";
+  src: url("/fonts/Switzer-Light.otf");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Switzer";
+  src: url("/fonts/Switzer-Regular.otf");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Switzer";
+  src: url("/fonts/Switzer-Semibold.otf");
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Switzer";
+  src: url("/fonts/Switzer-Bold.otf");
+  font-weight: 700;
+}
+@font-face {
+  font-family: "SpaceGrotesk";
+  src: url("/fonts/SpaceGrotesk-VariableFont_wght.ttf");
+}

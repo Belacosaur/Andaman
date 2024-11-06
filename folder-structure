@@ -1,0 +1,35 @@
+app/
+├── components/
+│   ├── common/
+│   │   ├── Button.tsx
+│   │   ├── Navigation.tsx
+│   │   └── Footer.tsx
+│   ├── home/
+│   │   ├── Challenge.tsx
+│   │   ├── Causes.tsx
+│   │   ├── Swimmers.tsx
+│   │   └── DonationProgress.tsx
+│   └── wallet/
+│       ├── WalletProvider.tsx
+│       └── WalletButton.tsx
+├── lib/
+│   ├── constants/
+│   │   └── index.ts
+│   ├── hooks/
+│   │   └── useWallet.ts
+│   └── utils/
+│       └── index.ts
+├── public/
+│   ├── images/
+│   │   ├── hero-bg.png
+│   │   ├── map.png
+│   │   ├── swimmer1.jpg
+│   │   ├── swimmer2.jpg
+│   │   └── swimmer3.jpg
+│   └── icons/
+│       └── logo.svg
+├── types/
+│   └── index.ts
+├── globals.css
+├── layout.tsx
+└── page.tsx 
