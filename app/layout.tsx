@@ -1,11 +1,7 @@
-import type { Metadata } from 'next'
-import { biggerFont } from './fonts'
-import './globals.css'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'The Andaman 50K',
-  description: 'Support our swimmers crossing the Andaman Sea for a cause',
-}
+import './globals.css'
+import { WalletProvider } from '@/components/wallet/WalletProvider'
 
 export default function RootLayout({
   children,
@@ -13,14 +9,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${biggerFont.variable}`}>
-      <head>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/react-icons/gi/index.css" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/weather-icons/css/weather-icons.css" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" />
-      </head>
+    <html lang="en">
       <body>
-        {children}
+        <WalletProvider>
+          {children}
+        </WalletProvider>
       </body>
     </html>
   )

@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { biggerFont } from '../../fonts'
+import { biggerFont } from '../../app/fonts'
 import dynamic from 'next/dynamic'
 import { 
   GiWaterDrop, 

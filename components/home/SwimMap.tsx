@@ -1,11 +1,12 @@
 'use client'
+
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import { LatLngTuple } from 'leaflet'
-import { GiWaterDrop, GiWaves, GiShipWheel, GiShrimp } from 'react-icons/gi' // Different ocean icons
-import { IoEarth } from 'react-icons/io5' // Import earth icon
+import { GiWaterDrop, GiWaves, GiShipWheel, GiShrimp } from 'react-icons/gi'
+import { IoEarth } from 'react-icons/io5'
 
 // Updated waypoints based on the image
 const waypoints = [
@@ -93,6 +94,7 @@ const interpolatePosition = (start: LatLngTuple, end: LatLngTuple, fraction: num
 
 export function SwimMap() {
   const mapRef = useRef<L.Map>(null)
+  const [isClient, setIsClient] = useState(false)
   
   // Initialize swimmer positions with data from your Swimmers component
   const [swimmerPositions, setSwimmerPositions] = useState(
@@ -145,23 +147,12 @@ export function SwimMap() {
   }, [])
 
   useEffect(() => {
-    // Fix for SSR
-    delete (L.Icon.Default.prototype as any)._getIconUrl
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: '/marker-icon-2x.png',
-      iconUrl: '/marker-icon.png',
-      shadowUrl: '/marker-shadow.png',
-    })
-
-    // Add click handler to ensure map is focusable
-    const mapContainer = document.querySelector('.leaflet-container') as HTMLElement
-    if (mapContainer) {
-      mapContainer.tabIndex = 0 // Make the container focusable
-      mapContainer.addEventListener('click', () => {
-        mapContainer.focus()
-      })
-    }
+    setIsClient(true)
   }, [])
+
+  if (!isClient) {
+    return <div className="h-[600px] bg-gray-100 rounded-[200px/100px]" />
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
@@ -186,6 +177,7 @@ export function SwimMap() {
 
       <div className="h-[600px] w-full map-container">
         <MapContainer 
+          key="map"
           ref={mapRef}
           center={[7.7807, 98.5784]}
           zoom={11} 

@@ -1,10 +1,10 @@
-import { Challenge } from '@/app/components/home/Challenge'
-import { Causes } from '@/app/components/home/Causes'
-import { Swimmers } from '@/app/components/home/Swimmers'
-import { DonationProgress } from '@/app/components/home/DonationProgress'
-import { Navigation } from '@/app/components/common/Navigation'
-import { Footer } from '@/app/components/common/Footer'
-import { SwimMap } from './components/home/SwimMap'
+import { Challenge } from '@/components/home/Challenge'
+import { Causes } from '@/components/home/Causes'
+import { Swimmers } from '@/components/home/Swimmers'
+import { DonationProgress } from '@/components/home/DonationProgress'
+import { Navigation } from '@/components/common/Navigation'
+import { Footer } from '@/components/common/Footer'
+import { SwimMap } from '@/components/home/SwimMap'
 
 export default function Home() {
   return (

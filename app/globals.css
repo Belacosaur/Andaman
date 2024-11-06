@@ -122,3 +122,15 @@ body {
   display: none !important;
 }
 
+/* Add these styles if not already present */
+.map-wrapper {
+  position: relative;
+  height: 500px;
+  width: 100%;
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}
+

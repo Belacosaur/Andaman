@@ -3,16 +3,19 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  webpack: (config) => {
-    config.resolve.fallback = { 
-      ...config.resolve.fallback,
-      "pino-pretty": false,
-      fs: false
-    };
-    return config;
-  },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      os: false,
+      path: false,
+      crypto: false,
+      "pino-pretty": false
+    };
+    return config;
   },
   transpilePackages: ['react-leaflet', '@react-leaflet/core', 'leaflet']
 }
