@@ -69,6 +69,13 @@ export function Challenge() {
     { id: 3, position: waypoints[0].position, segment: 0, progress: 0 }
   ])
 
+  // Add this after your waypoints definition
+  const [swimmerSpeeds, setSwimmerSpeeds] = useState([
+    { baseSpeed: 0.005, variation: 0 },
+    { baseSpeed: 0.005, variation: 0 },
+    { baseSpeed: 0.005, variation: 0 }
+  ])
+
   // Helper function
   const interpolatePosition = (start: [number, number], end: [number, number], fraction: number): [number, number] => {
     return [
@@ -77,34 +84,84 @@ export function Challenge() {
     ]
   }
 
-  // Update swimmer markers when positions change
+  // Update speeds randomly every few seconds
+  useEffect(() => {
+    const updateSpeeds = () => {
+      setSwimmerSpeeds(speeds => speeds.map(speed => ({
+        baseSpeed: 0.005,
+        variation: Math.random() * 0.004 - 0.002 // Random value between -0.002 and 0.002
+      })))
+    }
+
+    // Initial speed variation
+    updateSpeeds()
+    
+    // Update speeds every 3-5 seconds
+    const interval = setInterval(() => {
+      updateSpeeds()
+    }, 3000 + Math.random() * 2000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // Add swimmers data
+  const swimmers = [
+    {
+      name: "Noah Tepicky",
+      image: "/swimmer1.jpg",  // Remove 'public' from path
+      description: "Suspendisse molestie purus vel aliquet venenatis..."
+    },
+    {
+      name: "Robert Connelly",
+      image: "/swimmer2.jpg",
+      description: "Suspendisse molestie purus vel aliquet venenatis..."
+    },
+    {
+      name: "Zane Tackett",
+      image: "/swimmer3.jpg",
+      description: "Suspendisse molestie purus vel aliquet venenatis..."
+    }
+  ]
+
+  // Update marker code
   useEffect(() => {
     if (!mapInstanceRef.current) return
 
-    // Clear existing markers
+    // Clear ALL existing swimmer markers first
     mapInstanceRef.current.eachLayer((layer) => {
-      if (layer instanceof L.Marker && layer.getPopup()?.getContent()?.toString().includes('Swimmer')) {
-        mapInstanceRef.current?.removeLayer(layer)
+      if (layer instanceof L.Marker) {
+        const popup = layer.getPopup();
+        const content = popup?.getContent()?.toString() || '';
+        // Only remove swimmer markers, not waypoint markers
+        if (content.includes('Currently swimming')) {
+          mapInstanceRef.current?.removeLayer(layer);
+        }
       }
-    })
+    });
 
-    // Add updated markers with more visible styling
+    // Add new markers
     swimmerPositions.forEach((swimmer, index) => {
       const swimmerIcon = L.divIcon({
         className: 'custom-swimmer',
         html: `
-          <div class="w-6 h-6 bg-[#FFD700] rounded-full border-4 border-white shadow-lg flex items-center justify-center animate-pulse">
-            <div class="w-2 h-2 bg-white rounded-full"></div>
-          </div>
+          <img 
+            src="${swimmers[index].image}" 
+            alt="${swimmers[index].name}"
+            class="w-12 h-12 rounded-full object-cover border-4 border-white shadow-lg"
+          />
         `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
+        iconSize: [48, 48],
+        iconAnchor: [24, 24],
+        popupAnchor: [0, -24]
       })
 
-      L.marker(swimmer.position, { icon: swimmerIcon })
+      L.marker(swimmer.position, { 
+        icon: swimmerIcon,
+        interactive: true 
+      })
         .bindPopup(`
           <div class="p-2 min-w-[150px]">
-            <h3 class="font-bold text-[#38A4B6] mb-1">Swimmer ${index + 1}</h3>
+            <h3 class="font-bold text-[#38A4B6] mb-1">${swimmers[index].name}</h3>
             <p class="text-sm text-gray-600">Currently swimming</p>
           </div>
         `)
@@ -112,7 +169,7 @@ export function Challenge() {
     })
   }, [swimmerPositions])
 
-  // Animation effect
+  // Modified animation effect with varying speeds
   useEffect(() => {
     if (!mapInstanceRef.current) return
 
@@ -120,20 +177,26 @@ export function Challenge() {
       setSwimmerPositions(prevPositions => {
         return prevPositions.map((swimmer, index) => {
           let { segment, progress } = swimmer
-          progress += 0.005
+          // Apply current speed with variation
+          const currentSpeed = swimmerSpeeds[index].baseSpeed + swimmerSpeeds[index].variation
+          progress += currentSpeed
+
           if (progress >= 1) {
             progress = 0
             segment = segment + 1 >= waypoints.length - 1 ? 0 : segment + 1
           }
+          
           const start = waypoints[segment].position
           const end = waypoints[segment + 1].position
           const basePosition = interpolatePosition(start, end, progress)
           
-          const offset = index === 0 ? 0 : index === 1 ? 0.006 : -0.006
+          // Reduced lateral offset for closer competition
+          const offset = index === 0 ? 0 : index === 1 ? 0.003 : -0.003
           const newPosition: [number, number] = [
             basePosition[0],
             basePosition[1] + offset
           ]
+          
           return {
             ...swimmer,
             position: newPosition,
@@ -145,7 +208,28 @@ export function Challenge() {
     }, 50)
 
     return () => clearInterval(interval)
-  }, [mapInstanceRef.current])
+  }, [mapInstanceRef.current, swimmerSpeeds])
+
+  // Update the marker styling to reflect race positions
+  useEffect(() => {
+    if (!mapInstanceRef.current) return
+
+    mapInstanceRef.current.eachLayer((layer) => {
+      if (layer instanceof L.Marker && layer.getPopup()?.getContent()?.toString().includes('Swimmer')) {
+        mapInstanceRef.current?.removeLayer(layer)
+      }
+    })
+
+    // Calculate race positions
+    const positions = [...swimmerPositions]
+      .map((swimmer, index) => ({
+        ...swimmer,
+        originalIndex: index,
+        totalProgress: swimmer.segment + swimmer.progress
+      }))
+      .sort((a, b) => b.totalProgress - a.totalProgress)
+      
+  }, [swimmerPositions])
 
   useEffect(() => {
     if (!mapInstanceRef.current && mapRef.current) {
