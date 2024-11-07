@@ -1,7 +1,8 @@
 'use client'
 
 import './globals.css'
-import { WalletProvider } from '@/components/wallet/WalletProvider'
+import { WalletProvider } from './components/wallet/WalletProvider'
+import React from 'react'
 
 export default function RootLayout({
   children,

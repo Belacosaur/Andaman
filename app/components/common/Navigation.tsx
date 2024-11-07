@@ -3,8 +3,8 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { WalletButton } from '@/components/wallet/WalletButton'
-import { biggerFont } from '@/app/fonts'
+import { WalletButton } from '../../components/wallet/WalletButton'
+import { biggerFont } from '../../fonts'
 
 export function Navigation() {
   return (

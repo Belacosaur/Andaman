@@ -2,7 +2,8 @@
 
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletButton } from '../wallet/WalletButton'
-import { biggerFont } from '@/app/fonts'
+import { biggerFont } from '../../fonts'
+import React from 'react'
 
 export function DonationProgress() {
   const { connected } = useWallet()

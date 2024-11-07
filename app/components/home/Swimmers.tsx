@@ -2,17 +2,17 @@ export function Swimmers() {
   const swimmers = [
     {
       name: "Noah Tepicky",
-      image: "/images/swimmer1.jpg",
+      image: "/public/swimmer1.jpg",
       description: "Suspendisse molestie purus vel aliquet venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean eu vehicula mi. Suspendisse venenatis congue velit, vel pellentesque sapien varius nec. Sed convallis egestas scelerisque."
     },
     {
       name: "Robert Connelly",
-      image: "/images/swimmer2.jpg",
+      image: "/public/swimmer2.jpg",
       description: "Suspendisse molestie purus vel aliquet venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean eu vehicula mi. Suspendisse venenatis congue velit, vel pellentesque sapien varius nec. Sed convallis egestas scelerisque."
     },
     {
       name: "Zane Tackett",
-      image: "/images/swimmer3.jpg",
+      image: "/public/swimmer3.jpg",
       description: "Suspendisse molestie purus vel aliquet venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean eu vehicula mi. Suspendisse venenatis congue velit, vel pellentesque sapien varius nec. Sed convallis egestas scelerisque."
     }
   ]

@@ -17,7 +17,7 @@ const nextConfig = {
     };
     return config;
   },
-  transpilePackages: ['react-leaflet', '@react-leaflet/core', 'leaflet']
+
 }
 
 module.exports = nextConfig 

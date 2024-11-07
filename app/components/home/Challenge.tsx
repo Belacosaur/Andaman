@@ -1,8 +1,10 @@
 'use client'
 
 import Image from 'next/image'
-import { biggerFont } from '../../app/fonts'
-import dynamic from 'next/dynamic'
+import { biggerFont } from '../../fonts'
+import React, { useEffect, useRef } from 'react'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 import { 
   GiWaterDrop, 
   GiWaves, 
@@ -15,6 +17,28 @@ import {
 } from 'react-icons/gi'
 
 export function Challenge() {
+  const mapRef = useRef<HTMLDivElement>(null)
+  const mapInstanceRef = useRef<L.Map | null>(null)
+
+  useEffect(() => {
+    if (!mapInstanceRef.current && mapRef.current) {
+      const map = L.map(mapRef.current).setView([7.7807, 98.5784], 11)
+      
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(map)
+
+      mapInstanceRef.current = map
+    }
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove()
+        mapInstanceRef.current = null
+      }
+    }
+  }, [])
+
   return (
     <section className="relative bg-white">
       {/* Ocean-themed decorative elements */}
@@ -129,9 +153,13 @@ export function Challenge() {
         </div>
       </div>
 
-      {/* Map Section */}
+      {/* Map Section - Updated */}
       <div className="relative mt-16 px-4">
         <div className="mx-auto max-w-7xl">
+          <div 
+            ref={mapRef}
+            className="h-[400px] w-full rounded-lg overflow-hidden"
+          />
         </div>
       </div>
     </section>

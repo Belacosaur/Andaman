@@ -6,6 +6,7 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { clusterApiUrl } from '@solana/web3.js'
 import dynamic from 'next/dynamic'
+import React from 'react'
 
 require('@solana/wallet-adapter-react-ui/styles.css')
 

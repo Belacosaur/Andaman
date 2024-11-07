@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { cn } from '@/app/lib/utils'
+import { cn } from '../../lib/utils'
+import React from 'react'
 
 export function WalletButton({ className }: { className?: string }) {
   const { connected } = useWallet()
