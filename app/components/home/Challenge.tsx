@@ -88,17 +88,26 @@ export function Challenge() {
       }
     })
 
-    // Add updated markers
+    // Add updated markers with more visible styling
     swimmerPositions.forEach((swimmer, index) => {
       const swimmerIcon = L.divIcon({
         className: 'custom-swimmer',
-        html: `<div class="w-3 h-3 bg-yellow-400 rounded-full border-2 border-white shadow-lg"></div>`,
-        iconSize: [12, 12],
-        iconAnchor: [6, 6]
+        html: `
+          <div class="w-6 h-6 bg-[#FFD700] rounded-full border-4 border-white shadow-lg flex items-center justify-center animate-pulse">
+            <div class="w-2 h-2 bg-white rounded-full"></div>
+          </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
       })
 
       L.marker(swimmer.position, { icon: swimmerIcon })
-        .bindPopup(`Swimmer ${index + 1}`)
+        .bindPopup(`
+          <div class="p-2 min-w-[150px]">
+            <h3 class="font-bold text-[#38A4B6] mb-1">Swimmer ${index + 1}</h3>
+            <p class="text-sm text-gray-600">Currently swimming</p>
+          </div>
+        `)
         .addTo(mapInstanceRef.current!)
     })
   }, [swimmerPositions])
@@ -111,7 +120,7 @@ export function Challenge() {
       setSwimmerPositions(prevPositions => {
         return prevPositions.map((swimmer, index) => {
           let { segment, progress } = swimmer
-          progress += 0.003
+          progress += 0.005
           if (progress >= 1) {
             progress = 0
             segment = segment + 1 >= waypoints.length - 1 ? 0 : segment + 1
