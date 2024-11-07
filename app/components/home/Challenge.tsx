@@ -22,11 +22,109 @@ export function Challenge() {
 
   useEffect(() => {
     if (!mapInstanceRef.current && mapRef.current) {
-      const map = L.map(mapRef.current).setView([7.7807, 98.5784], 11)
+      const defaultView = {
+        center: [7.7807, 98.5784] as [number, number],
+        zoom: 11
+      }
+
+      // Define boundaries (slightly larger than the route area)
+      const southWest = L.latLng(7.70, 98.35)  // Bottom left corner
+      const northEast = L.latLng(7.85, 98.80)  // Top right corner
+      const bounds = L.latLngBounds(southWest, northEast)
+
+      const map = L.map(mapRef.current, {
+        zoomControl: false,  // Remove default zoom buttons
+        center: defaultView.center,
+        zoom: defaultView.zoom,
+        maxBounds: bounds,         // Set the boundaries
+        maxBoundsViscosity: 1.0,   // How hard the boundaries resist being crossed
+        minZoom: 10,              // Prevent zooming out too far
+        maxZoom: 14               // Prevent zooming in too far
+      })
       
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
       }).addTo(map)
+
+      // Define waypoints
+      const waypoints = [
+        { 
+          id: 1, 
+          position: [7.746598519892269, 98.76933835940949] as [number, number],
+          description: 'Phi Phi Islands',
+          location: 'Starting Point',
+          day: 'Day 1 Start',
+          image: '/Koi Phi Phi.jpg'
+        },
+        { 
+          id: 2, 
+          position: [7.745868494373943, 98.61387494321093] as [number, number],
+          description: 'Koi Zone',
+          location: 'First Rest Stop',
+          day: 'End of Day 1 - 18km'
+        },
+        { 
+          id: 3, 
+          position: [7.763570144941255, 98.47883356652684] as [number, number],
+          description: 'Ko MaiThon',
+          location: 'Checkpoint',
+          day: 'Day 2 - 15km',
+          image: '/Koi Mai Thon.jpg'
+        },
+        { 
+          id: 4, 
+          position: [7.788382629629947, 98.40286495874568] as [number, number],
+          description: 'Route Bend',
+          location: 'Checkpoint',
+          day: 'Day 2 Progress'
+        },
+        { 
+          id: 5, 
+          position: [7.814370, 98.394861] as [number, number],
+          description: 'AoYon Beach',
+          location: 'Finish Line',
+          day: 'Day 3 - 11.5km',
+          image: '/Ao Yon Beach.jpg'
+        }
+      ]
+
+      // Create route line from waypoint positions
+      const routeCoordinates = waypoints.map(point => point.position)
+      L.polyline(routeCoordinates, {
+        color: '#38A4B6',
+        weight: 3,
+        dashArray: '10, 10',
+        opacity: 0.7
+      }).addTo(map)
+
+      // Add markers with custom green dot style
+      waypoints.forEach(point => {
+        const marker = L.divIcon({
+          className: 'custom-marker',
+          html: `<div class="w-4 h-4 bg-[#4CAF50] rounded-full border-2 border-white shadow-lg"></div>`,
+          iconSize: [16, 16],
+          iconAnchor: [8, 8]
+        })
+
+        L.marker(point.position, { icon: marker })
+          .bindPopup(`
+            <div class="p-3 min-w-[250px]">
+              <h3 class="font-bold text-[#38A4B6] text-lg mb-2">${point.description}</h3>
+              ${point.image ? `
+                <div class="mb-3 rounded-lg overflow-hidden">
+                  <img 
+                    src="${point.image}" 
+                    alt="${point.description}"
+                    class="w-full h-32 object-cover"
+                  />
+                </div>
+              ` : ''}
+              <p class="text-sm text-gray-700 mb-1">${point.location}</p>
+              <p class="text-sm text-gray-600 font-medium">${point.day}</p>
+            </div>
+          `)
+          .addTo(map)
+      })
 
       mapInstanceRef.current = map
     }
@@ -153,12 +251,12 @@ export function Challenge() {
         </div>
       </div>
 
-      {/* Map Section - Updated */}
-      <div className="relative mt-16 px-4">
-        <div className="mx-auto max-w-7xl">
+      {/* Map Section */}
+      <div className="relative mt-16 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div 
             ref={mapRef}
-            className="h-[400px] w-full rounded-lg overflow-hidden"
+            className="h-[800px] w-full rounded-[400px_400px_400px_400px] overflow-hidden"
           />
         </div>
       </div>
