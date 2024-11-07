@@ -10,3 +10,8 @@
 .leaflet-control-attribution {
   display: none;
 }
+
+.custom-swimmer {
+  background: none;
+  border: none;
+}

@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { biggerFont } from '../../fonts'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { 
@@ -19,6 +19,124 @@ import {
 export function Challenge() {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<L.Map | null>(null)
+
+  // Define waypoints
+  const waypoints = [
+    { 
+      id: 1, 
+      position: [7.746598519892269, 98.76933835940949] as [number, number],
+      description: 'Phi Phi Islands',
+      location: 'Starting Point',
+      day: 'Day 1 Start',
+      image: '/Koi Phi Phi.jpg'
+    },
+    { 
+      id: 2, 
+      position: [7.745868494373943, 98.61387494321093] as [number, number],
+      description: 'Koi Zone',
+      location: 'First Rest Stop',
+      day: 'End of Day 1 - 18km'
+    },
+    { 
+      id: 3, 
+      position: [7.763570144941255, 98.47883356652684] as [number, number],
+      description: 'Ko MaiThon',
+      location: 'Checkpoint',
+      day: 'Day 2 - 15km',
+      image: '/Koi Mai Thon.jpg'
+    },
+    { 
+      id: 4, 
+      position: [7.788382629629947, 98.40286495874568] as [number, number],
+      description: 'Route Bend',
+      location: 'Checkpoint',
+      day: 'Day 2 Progress'
+    },
+    { 
+      id: 5, 
+      position: [7.814370, 98.394861] as [number, number],
+      description: 'AoYon Beach',
+      location: 'Finish Line',
+      day: 'Day 3 - 11.5km',
+      image: '/Ao Yon Beach.jpg'
+    }
+  ]
+
+  // Initialize swimmer positions
+  const [swimmerPositions, setSwimmerPositions] = useState([
+    { id: 1, position: waypoints[0].position, segment: 0, progress: 0 },
+    { id: 2, position: waypoints[0].position, segment: 0, progress: 0 },
+    { id: 3, position: waypoints[0].position, segment: 0, progress: 0 }
+  ])
+
+  // Helper function
+  const interpolatePosition = (start: [number, number], end: [number, number], fraction: number): [number, number] => {
+    return [
+      start[0] + (end[0] - start[0]) * fraction,
+      start[1] + (end[1] - start[1]) * fraction
+    ]
+  }
+
+  // Update swimmer markers when positions change
+  useEffect(() => {
+    if (!mapInstanceRef.current) return
+
+    // Clear existing markers
+    mapInstanceRef.current.eachLayer((layer) => {
+      if (layer instanceof L.Marker && layer.getPopup()?.getContent()?.toString().includes('Swimmer')) {
+        mapInstanceRef.current?.removeLayer(layer)
+      }
+    })
+
+    // Add updated markers
+    swimmerPositions.forEach((swimmer, index) => {
+      const swimmerIcon = L.divIcon({
+        className: 'custom-swimmer',
+        html: `<div class="w-3 h-3 bg-yellow-400 rounded-full border-2 border-white shadow-lg"></div>`,
+        iconSize: [12, 12],
+        iconAnchor: [6, 6]
+      })
+
+      L.marker(swimmer.position, { icon: swimmerIcon })
+        .bindPopup(`Swimmer ${index + 1}`)
+        .addTo(mapInstanceRef.current!)
+    })
+  }, [swimmerPositions])
+
+  // Animation effect
+  useEffect(() => {
+    if (!mapInstanceRef.current) return
+
+    const interval = setInterval(() => {
+      setSwimmerPositions(prevPositions => {
+        return prevPositions.map((swimmer, index) => {
+          let { segment, progress } = swimmer
+          progress += 0.003
+          if (progress >= 1) {
+            progress = 0
+            segment = segment + 1 >= waypoints.length - 1 ? 0 : segment + 1
+          }
+          const start = waypoints[segment].position
+          const end = waypoints[segment + 1].position
+          const basePosition = interpolatePosition(start, end, progress)
+          
+          const offset = index === 0 ? 0 : index === 1 ? 0.006 : -0.006
+          const newPosition: [number, number] = [
+            basePosition[0],
+            basePosition[1] + offset
+          ]
+          return {
+            ...swimmer,
+            position: newPosition,
+            segment,
+            progress
+          }
+        })
+      })
+    }, 50)
+
+    return () => clearInterval(interval)
+  }, [mapInstanceRef.current])
 
   useEffect(() => {
     if (!mapInstanceRef.current && mapRef.current) {
@@ -45,48 +163,6 @@ export function Challenge() {
       L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
       }).addTo(map)
-
-      // Define waypoints
-      const waypoints = [
-        { 
-          id: 1, 
-          position: [7.746598519892269, 98.76933835940949] as [number, number],
-          description: 'Phi Phi Islands',
-          location: 'Starting Point',
-          day: 'Day 1 Start',
-          image: '/Koi Phi Phi.jpg'
-        },
-        { 
-          id: 2, 
-          position: [7.745868494373943, 98.61387494321093] as [number, number],
-          description: 'Koi Zone',
-          location: 'First Rest Stop',
-          day: 'End of Day 1 - 18km'
-        },
-        { 
-          id: 3, 
-          position: [7.763570144941255, 98.47883356652684] as [number, number],
-          description: 'Ko MaiThon',
-          location: 'Checkpoint',
-          day: 'Day 2 - 15km',
-          image: '/Koi Mai Thon.jpg'
-        },
-        { 
-          id: 4, 
-          position: [7.788382629629947, 98.40286495874568] as [number, number],
-          description: 'Route Bend',
-          location: 'Checkpoint',
-          day: 'Day 2 Progress'
-        },
-        { 
-          id: 5, 
-          position: [7.814370, 98.394861] as [number, number],
-          description: 'AoYon Beach',
-          location: 'Finish Line',
-          day: 'Day 3 - 11.5km',
-          image: '/Ao Yon Beach.jpg'
-        }
-      ]
 
       // Create route line from waypoint positions
       const routeCoordinates = waypoints.map(point => point.position)
@@ -254,10 +330,24 @@ export function Challenge() {
       {/* Map Section */}
       <div className="relative mt-16 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div 
-            ref={mapRef}
-            className="h-[800px] w-full rounded-[400px_400px_400px_400px] overflow-hidden"
-          />
+          {/* Map Container with decorative elements */}
+          <div className="relative">
+            {/* Gradient background effect */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-[#8FD8F4] via-[#38A4B6] to-[#8FD8F4] rounded-[410px_410px_410px_410px] blur-2xl opacity-75" />
+            
+            {/* White container */}
+            <div className="relative bg-white p-6 rounded-[405px_405px_405px_405px] shadow-xl">
+              {/* Map */}
+              <div 
+                ref={mapRef}
+                className="h-[600px] w-full rounded-[400px_400px_400px_400px] overflow-hidden shadow-inner"
+              />
+            </div>
+
+            {/* Decorative dots */}
+            <div className="absolute -right-4 top-1/4 w-8 h-8 rounded-full bg-[#8FD8F4] blur-sm" />
+            <div className="absolute -left-4 top-3/4 w-6 h-6 rounded-full bg-[#38A4B6] blur-sm" />
+          </div>
         </div>
       </div>
     </section>
